@@ -11,6 +11,7 @@ git-repository-url = "https://github.com/dogeorg/connect/"
 git-repository-icon = "fa-github"
 edit-url-template = "https://github.com/dogeorg/connect/edit/main/{path}"
 cname = "connect.dogecoin.org"
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
 
 [output.html.playground]
 editable = true
@@ -24,3 +25,8 @@ boost-hierarchy = 2
 boost-paragraph = 1
 expand = true
 heading-split-level = 2
+
+[preprocessor]
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
