@@ -21,6 +21,11 @@ jobs:
         mkdir mdbook
         curl -sSL $url | tar -xz --directory=./mdbook
         echo `pwd`/mdbook >> $GITHUB_PATH
+    - name: Install mdbook-mermaid
+      run: |
+        tag=$(curl 'https://api.github.com/repos/badboy/mdbook-mermaid/releases/latest' | jq -r '.tag_name')
+        curl -L https://github.com/badboy/mdbook-mermaid/releases/download/${tag}/mdbook-mermaid-${tag}-x86_64-unknown-linux-gnu.tar.gz | tar xz
+        mv mdbook-mermaid $HOME/.cargo/bin/
     - name: Deploy GitHub Pages
       run: |
         # This assumes your book is in the root of your repository.
