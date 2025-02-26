@@ -93,6 +93,5 @@ which can be packaged for mobile using [gomobile bind](https://pkg.go.dev/golang
 | Rust     | <https://lib.rs/crates/secp256k1>                                   |
 | C#       | <https://github.com/zone117x/Secp256k1.Net>                         |
 | Java     | <https://github.com/SamouraiDev/BIP340_Schnorr>                     |
-|          | <https://gitlab.com/bitcoinj/secp256k1-jdk>                         |
 | Dart     | <https://pub.dev/packages/bip340>                                   |
 | Python   | <https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py> |
