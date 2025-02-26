@@ -68,9 +68,9 @@ Use the following steps to decode and verify the payload.
 3. Decode the Hex-encoded `pubkey` and `sig` fields, yielding bytes.
 4. Compute the Double-SHA256 of the decoded payload bytes from step 2, i.e. `SHA-256(SHA-256(bytes))`
 5. Apply BIP-340 `lift_x` algorithm on the `pubkey` bytes to recover the full Public Key.
-   A BIP-304 library will supply this step (it's essentially parsing a compressed public key.)
+   A BIP-340 library will supply this step (it's essentially parsing a compressed public key.)
 6. Verify the BIP-340 Schnorr signature, using the Double-SHA256 hash as the `message`, and the full Public Key and `sig`.
-   A BIP-304 library will supply the signature verification algorithm.
+   A BIP-340 library will supply the signature verification algorithm.
    If this step fails, it suggests a MITM attack or faulty implementation.
 7. Parse the JSON payload bytes using a standard JSON parser.
 8. Check the `timeout` field: do not submit a payment transaction after the time `issued` + `timeout`.
@@ -83,9 +83,9 @@ signed by the _Payment Relay's_ private key, i.e. the envelope was created by th
 A reference implementation of these algorithms exist at [github.com/dogeorg/dogeconnect-go](https://github.com/dogeorg/dogeconnect-go)
 which can be packaged for mobile using [gomobile bind](https://pkg.go.dev/golang.org/x/mobile/cmd/gobind).
 
-### BIP-304 Implementations
+### BIP-340 Implementations
 
-| Language | BIP-304 Implementation                                              |
+| Language | BIP-340 Implementation                                              |
 |----------|---------------------------------------------------------------------|
 | C/C++    | <https://github.com/bitcoin-core/secp256k1>                         |
 | Go       | <https://pkg.go.dev/github.com/btcsuite/btcd/btcec/v2/schnorr>      |
