@@ -67,7 +67,7 @@ Use the following steps to decode and verify the payload.
 2. Decode the Base64-encoded `payload` field, yielding bytes.
 3. Decode the Hex-encoded `pubkey` and `sig` fields, yielding bytes.
 4. Compute the Double-SHA256 of the decoded payload bytes from step 2, i.e. `SHA-256(SHA-256(bytes))`
-5. Apply BIP-340 `lift_x` algorithm on the `pubkey` to recover the full Public Key.
+5. Apply BIP-340 `lift_x` algorithm on the `pubkey` bytes to recover the full Public Key.
    A BIP-304 library will supply this step (it's essentially parsing a compressed public key.)
 6. Verify the BIP-340 Schnorr signature, using the Double-SHA256 hash as the `message`, and the full Public Key and `sig`.
    A BIP-304 library will supply the signature verification algorithm.
@@ -82,3 +82,17 @@ signed by the _Payment Relay's_ public key, i.e. the envelope was created by the
 
 A reference implementation of these algorithms exist at [github.com/dogeorg/dogeconnect-go](https://github.com/dogeorg/dogeconnect-go)
 which can be packaged for mobile using [gomobile bind](https://pkg.go.dev/golang.org/x/mobile/cmd/gobind).
+
+### BIP-304 Implementations
+
+| Language | BIP-304 Implementation                                              |
+|----------|---------------------------------------------------------------------|
+| C/C++    | <https://github.com/bitcoin-core/secp256k1>                         |
+| Go       | <https://pkg.go.dev/github.com/btcsuite/btcd/btcec/v2/schnorr>      |
+|          | <https://github.com/Yawning/secp256k1-voi>                          |
+| Rust     | <https://lib.rs/crates/secp256k1>                                   |
+| C#       | <https://github.com/zone117x/Secp256k1.Net>                         |
+| Java     | <https://github.com/SamouraiDev/BIP340_Schnorr>                     |
+|          | <https://gitlab.com/bitcoinj/secp256k1-jdk>                         |
+| Dart     | <https://pub.dev/packages/bip340>                                   |
+| Python   | <https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py> |
