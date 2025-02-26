@@ -78,7 +78,7 @@ Use the following steps to decode and verify the payload.
 10. Create and sign a payment transaction and submit it to the `relay` URL.
 
 The goals of the above process are to verify that the _Payment Envelope_ is cryptographically
-signed by the _Payment Relay's_ public key, i.e. the envelope was created by the _Payment Relay_.
+signed by the _Payment Relay's_ private key, i.e. the envelope was created by the _Payment Relay_.
 
 A reference implementation of these algorithms exist at [github.com/dogeorg/dogeconnect-go](https://github.com/dogeorg/dogeconnect-go)
 which can be packaged for mobile using [gomobile bind](https://pkg.go.dev/golang.org/x/mobile/cmd/gobind).
