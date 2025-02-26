@@ -1,7 +1,7 @@
 [book]
-title = "Doge Connect"
-description = "Doge Connect - Payment Protocol."
-authors = ["qlpqlp", "tjstebbing"]
+title = "DogeConnect"
+description = "DogeConnect - Payment Protocol"
+authors = ["qlpqlp", "tjstebbing", "raffe"]
 language = "en"
 src = "src"
 
