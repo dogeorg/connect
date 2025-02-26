@@ -1,4 +1,4 @@
-## Payment Envelope
+## Payment Envelope Schema
 
 ### Connect Envelope
 
@@ -19,7 +19,7 @@
 	"id": "xyz123",                          // Gateway unique payment ID
 	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
 	"timeout": 60,                           // Timeout in seconds
-	"gateway": "https://example.com/..",     // DogeConnect Gateway URL
+	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
 	"vendor_icon": "https://example.com/..", // vendor icon URL, JPG or PNG
 	"vendor_name": "Vendor Co",              // vendor display name
 	"vendor_address": "123 Example St",      // vendor business address (optional)
@@ -30,8 +30,6 @@
 	"outputs": [],                           // List of outputs to pay (Connect Outputs)
 }
 ```
-
-Do not submit a payment transaction after the time `issued` + `timeout`.
 
 ### Connect Item
 
@@ -56,3 +54,31 @@ Do not submit a payment transaction after the time `issued` + `timeout`.
 	"amount": "1.0",                                 // Amount, DECMIAL string
 }
 ```
+
+## Payment Envelope Verification
+
+The DogeConnect _Payment Envelope_ contains a Base64-encoded JSON payload,
+the _Payment Relay's_ public key, and a digital signature of the payload
+signed by the _Payment Relay's_ private key.
+
+Use the following steps to decode and verify the payload.
+
+1. Ensure you verify the `pubkey` hash as described in the [Payment QR-Code](../qr_codes/qr_codes.md) section.
+2. Decode the Base64-encoded `payload` field, yielding bytes.
+3. Decode the Hex-encoded `pubkey` and `sig` fields, yielding bytes.
+4. Compute the Double-SHA256 of the decoded payload bytes from step 2, i.e. `SHA-256(SHA-256(bytes))`
+5. Apply BIP-340 `lift_x` algorithm on the `pubkey` to recover the full Public Key.
+   A BIP-304 library will supply this step (it's essentially parsing a compressed public key.)
+6. Verify the BIP-340 Schnorr signature, using the Double-SHA256 hash as the `message`, and the full Public Key and `sig`.
+   A BIP-304 library will supply the signature verification algorithm.
+   If this step fails, it suggests a MITM attack or faulty implementation.
+7. Parse the JSON payload bytes using a standard JSON parser.
+8. Check the `timeout` field: do not submit a payment transaction after the time `issued` + `timeout`.
+9. Display the payment information and ask the user to confirm payment.
+10. Create and sign a payment transaction and submit it to the `relay` URL.
+
+The goals of the above process are to verify that the _Payment Envelope_ is cryptographically
+signed by the _Payment Relay's_ public key, i.e. the envelope was created by the _Payment Relay_.
+
+A reference implementation of these algorithms exist at [github.com/dogeorg/dogeconnect-go](https://github.com/dogeorg/dogeconnect-go)
+which can be packaged for mobile using [gomobile bind](https://pkg.go.dev/golang.org/x/mobile/cmd/gobind).
