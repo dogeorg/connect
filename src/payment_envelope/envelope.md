@@ -5,8 +5,8 @@
 ```json
 {
 	"version": "1.0",             // MUST be 1.0
-	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. ConnectPayment)
-	"pubkey": "c8a6927d0a004..",  // Gateway Public Key, BIP-340 Schnorr X-only (32 bytes)
+	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. Connect Payment)
+	"pubkey": "c8a6927d0a004..",  // Relay Public Key, BIP-340 Schnorr X-only (32 bytes)
 	"sig": "202d831c6437c..",     // Payload Signature, BIP-340 Schnorr (64 bytes)
 }
 ```
@@ -16,7 +16,7 @@
 ```json
 {
 	"type": "payment",                       // MUST be "payment"
-	"id": "xyz123",                          // Gateway unique payment ID
+	"id": "PID-123",                         // Relay-unique Payment ID
 	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
 	"timeout": 60,                           // Timeout in seconds
 	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
@@ -75,7 +75,7 @@ Use the following steps to decode and verify the payload.
 7. Parse the JSON payload bytes using a standard JSON parser.
 8. Check the `timeout` field: do not submit a payment transaction after the time `issued` + `timeout`.
 9. Display the payment information and ask the user to confirm payment.
-10. Create and sign a payment transaction and submit it to the `relay` URL.
+10. Create and sign a payment transaction and submit it to the [Payment Relay](../payment_relay/relay.md).
 
 The goals of the above process are to verify that the _Payment Envelope_ is cryptographically
 signed by the _Payment Relay's_ private key, i.e. the envelope was created by the _Payment Relay_.
