@@ -15,9 +15,9 @@ All responses must include a `Cache-Control: no-store` header, to avoid
 leaking payment information into caches. Both endpoints additionally use
 the _POST_ method to avoid caching edge-cases (e.g. error responses.)
 
-The _Relay_ **must** implement the `pay` endpoint with **idempotence** such
-that, if the status of payment `id` is already `accepted` or `confirmed`,
-it responds to another `pay` request with the status `accepted`, ignoring
+The _Relay_ **must** implement the `pay` endpoint with **idempotence** in
+the following way: if the status of payment `id` is already `accepted` or
+`confirmed`, it responds to another `pay` request with that status, ignoring
 the supplied `tx`. This is because wallets will retry their `pay` request
 if they did not receive or process the first reply.
 
@@ -41,7 +41,7 @@ This is the _Payment Relay's_ reply from the `pay` URL.
 ```json
 {
     "id": "PID-123",       // Relay-unique Payment ID from Connect Payment
-	"status": "accepted",  // One of: accepted | declined
+	"status": "accepted",  // One of: accepted | confirmed | declined
     "reason": "",          // Reason for decline (message, optional)
     "required": 5,         // Number of block confirmations required (risk analysis)
     "confirmed": 0,        // Current number of block confirmations on-chain
@@ -49,13 +49,19 @@ This is the _Payment Relay's_ reply from the `pay` URL.
 }
 ```
 
+The status will be `accepted` if the _Relay_ requires one or more block
+confirmations on the blockchain, reflected in the `required` field.
+The status may be `confirmed` if the _Relay_ deems the payment low-risk.
+
 If the transaction is malformed, or does not pay the requested amounts to
 the requested addresses, the POST will be rejected with a **400 Bad Request**
 http response. This represents a _programming error_ in the wallet.
+A _bad request_ should not be retried.
 
 Payments may also be rejected with a `declined` status, in the case that
 the _Vendor_ or their nominated _Relay_ believes the transaction is too
-risky. This represents a _customer-specific_ problem.
+risky. This represents a _customer-specific_ problem. A declined request
+should not be retried.
 
 Wallets should also be prepared to handle 500 and 503 http errors,
 and other spurious errors, which indicate a temporary _Relay_ or
