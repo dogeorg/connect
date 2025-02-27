@@ -15,6 +15,12 @@ All responses must include a `Cache-Control: no-store` header, to avoid
 leaking payment information into caches. Both endpoints additionally use
 the _POST_ method to avoid caching edge-cases (e.g. error responses.)
 
+The _Relay_ **must** implement the `pay` endpoint with **idempotence** such
+that, if the status of payment `id` is already `accepted` or `confirmed`,
+it responds to another `pay` request with the status `accepted`, ignoring
+the supplied `tx`. This is because wallets will retry their `pay` request
+if they did not receive or process the first reply.
+
 
 ### Payment Response
 
@@ -50,6 +56,11 @@ http response. This represents a _programming error_ in the wallet.
 Payments may also be rejected with a `declined` status, in the case that
 the _Vendor_ or their nominated _Relay_ believes the transaction is too
 risky. This represents a _customer-specific_ problem.
+
+Wallets should also be prepared to handle 500 and 503 http errors,
+and other spurious errors, which indicate a temporary _Relay_ or
+network problem. Wallets _should_ retry the request a few times
+(with a small random delay) to increase reliability.
 
 The final three fields, `required`, `confirmed` and `due_sec` are in common
 with the _Status Reply_ below.
