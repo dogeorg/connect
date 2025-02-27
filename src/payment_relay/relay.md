@@ -23,7 +23,7 @@ This is the wallet's _response_ to the original _Payment Request_.
 ```json
 {
     "id": "PID-123",                // Relay-unique Payment ID from Connect Payment
-	"tx": "489c47f8a3ba3293737a.."  // hex-encoded signed dogecoin transaction
+	"tx": "489c47f8a3ba3293737a.."  // Hex-encoded signed dogecoin transaction
 }
 ```
 
@@ -37,8 +37,8 @@ This is the _Payment Relay's_ reply from the `pay` URL.
     "id": "PID-123",       // Relay-unique Payment ID from Connect Payment
 	"status": "accepted",  // One of: accepted | declined
     "reason": "",          // Reason for decline (message, optional)
-    "required": 5,         // number of block confirmations required (risk analysis)
-    "confirmed": 0,        // current number of block confirmations on-chain
+    "required": 5,         // Number of block confirmations required (risk analysis)
+    "confirmed": 0,        // Current number of block confirmations on-chain
     "due_sec": 300,        // Estimated time in seconds until confirmed
 }
 ```
@@ -74,8 +74,8 @@ This is the _Payment Relay's_ reply from the `status` URL.
 {
     "id": "PID-123",        // Relay-unique Payment ID from Connect Payment
 	"status": "accepted",   // unpaid | accepted | confirmed
-    "required": 5,          // number of block confirmations required
-    "confirmed": 4,         // current number of block confirmations on-chain
+    "required": 5,          // Number of block confirmations required
+    "confirmed": 4,         // Current number of block confirmations on-chain
     "due_sec": 30,          // Estimated time in seconds until confirmed
 }
 ```
