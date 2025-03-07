@@ -26,6 +26,8 @@
 	"total": "420.69",                       // Total amount including fees and taxes, DECMIAL string
 	"fees": "1.0",                           // Fee subtotal, DECMIAL string
 	"taxes": "5.31",                         // Taxes subtotal, DECMIAL string
+	"fiat_total"`                            // Total in fiat currency, DECMIAL string (optional)
+	"fiat_currency"`                         // ISO 4217 currency code (required with fiat_total)
 	"items": [],                             // List of line items to display (Connect Items)
 	"outputs": [],                           // List of outputs to pay (Connect Outputs)
 }

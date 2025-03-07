@@ -35,6 +35,9 @@ dogecoin:DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL?amount=8.25&dc=example.com%2Fdc%2Fxy
 * **dc** is a `https://` URL the wallet can use to fetch the _Payment Envelope_
 * **h** is a hash of the _Payment Relay_ public key, as a security check
 
+The `dc` URL always has the `https://` prefix trimmed off to save space in the
+QR code. This URL should be kept as short as possible.
+
 Wallets that support DogeConnect should fetch the _Payment Envelope_ from the `dc` URL
 rather than using the basic dogecoin address and amount; those fields provide backwards
 compatibility with older wallets.

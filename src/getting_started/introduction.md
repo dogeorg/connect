@@ -4,7 +4,7 @@ DogeConnect is a payment protocol for transmitting a detail-rich _Payment Reques
 _Vendor_ to a _Client Wallet_ and receiving a _Payment Response_ containing a signed
 transaction, which is validated and relayed to the network by a _Payment Relay_.
 
-**Note: this specification is not yet final; please provide feedback.**
+**Note: this specification is ready to implement; please provide implementation feedback.**
 
 DogeConnect comprises:
 * a _Payment QR Code_ specification,
