@@ -29,7 +29,8 @@ This is the wallet's _response_ to the original _Payment Request_.
 ```json
 {
     "id": "PID-123",                // Relay-unique Payment ID from Connect Payment
-	"tx": "489c47f8a3ba3293737a.."  // Hex-encoded signed dogecoin transaction
+	"tx": "489c47f8a3ba3293737..",  // Hex-encoded signed dogecoin transaction
+    "refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
 }
 ```
 
