@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>DogeConnect</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="DogeConnect - Payment Protocol">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DogeConnect</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dogeorg/connect/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="what-is-dogeconnect"><a class="header" href="#what-is-dogeconnect">What is DogeConnect?</a></h2>
+<p>DogeConnect is a payment protocol for transmitting a detail-rich <em>Payment Request</em> from a
+<em>Vendor</em> to a <em>Client Wallet</em> and receiving a <em>Payment Response</em> containing a signed
+transaction, which is validated and relayed to the network by a <em>Payment Relay</em>.</p>
+<p><strong>Note: this specification is ready to implement; please provide implementation feedback.</strong></p>
+<p>DogeConnect comprises:</p>
+<ul>
+<li>a <em>Payment QR Code</em> specification,</li>
+<li>a <em>Payment Envelope</em> JSON schema,</li>
+<li>an API specification for an internet <em>Payment Relay</em>.</li>
+</ul>
+<p>Through DogeConnect,
+<em>Vendors</em> can issue detailed payment requests to customers with itemised goods and
+services as well as taxes and fees, which the <em>Client Wallet</em> can display to the user
+along with the vendor's name and logo.</p>
+<p>In the DogeConnect model, the vendor or their nominated <em>Payment Relay</em> validates
+the transaction and determines their desired risk appetite, the number of blockchain
+confirmations they require, etc.</p>
+<pre class="mermaid">sequenceDiagram
+   participant w as Wallet
+   participant c as Client
+   participant v as Vendor
+   participant r as Relay
+
+   c -&gt;&gt; v: Let me buy something
+   v -&gt;&gt; r: Start payment (itemised payment info)
+   r -&gt;&gt; v: QR Code URI, payment ID
+   v -&gt;&gt; c: QR Code URI
+   c -&gt;&gt; w: Scans QR Code / NFC
+   w -&gt;&gt; r: Fetch Payment Envelope
+   r -&gt;&gt; w: Payment Envelope
+   w -&gt;&gt; w: Verify Hash (MITM)
+   w -&gt;&gt; w: Display itemised payment
+   w -&gt;&gt; w: Confirm/sign transaction
+   w -&gt;&gt; r: Submit signed transaction
+   r -&gt;&gt; r: Validate transaction
+   r -&gt;&gt; r: Submit to dogecoin network
+   r --&gt;&gt; v: Payment accepted
+   r -&gt;&gt; r: Wait for confirmation
+   r --&gt;&gt; v: Payment confirmed
+</pre>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="payment-qr-codes"><a class="header" href="#payment-qr-codes">Payment QR-Codes</a></h2>
+<p>The de-facto standard Dogecoin QR-Code encodes a URI like this:</p>
+<pre><code>dogecoin:DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL?amount=8.25
+</code></pre>
+<p>The URI scheme <code>dogecoin:</code> is associated with wallet software on a customer's device,
+so the wallet will open when the customer scans a QR Code with the device's camera.</p>
+<p>The above QR-Code requests a payment of 8.25 dogecoin to a specified address.
+Traditional wallets simply pre-fill the amount and allow the user to broadcast
+their payment transaction directly to the dogecoin network.</p>
+<p>This payment method has some problems:</p>
+<ul>
+<li>The vendor doesn't know the customer has initiated payment until the transaction
+is mined into a block, one or more minutes later.</li>
+<li>The customer can choose the amount to pay, or can pay with multiple transactions,
+which is difficult for the vendor to detect and reconcile.</li>
+<li>The customer doesn't see what they're paying for or who the vendor is,
+before signing the transaction.</li>
+</ul>
+<h3 id="dogeconnect-qr-codes"><a class="header" href="#dogeconnect-qr-codes">DogeConnect QR-Codes</a></h3>
+<p>Due to the limited space available in a QR Code, DogeConnect addresses these
+problems by including the URL of an itemised <em>Payment Request</em>.</p>
+<p>DogeConnect adds two parameters to the QR-Code:</p>
+<pre><code>dogecoin:DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL?amount=8.25&amp;dc=example.com%2Fdc%2Fxyz123&amp;h=p212MS4KXZBX5uDNXWmB
+</code></pre>
+<ul>
+<li><strong>dc</strong> is a <code>https://</code> URL the wallet can use to fetch the <em>Payment Envelope</em></li>
+<li><strong>h</strong> is a hash of the <em>Payment Relay</em> public key, as a security check</li>
+</ul>
+<p>The <code>dc</code> URL always has the <code>https://</code> prefix trimmed off to save space in the
+QR code. This URL should be kept as short as possible.</p>
+<p>Wallets that support DogeConnect should fetch the <em>Payment Envelope</em> from the <code>dc</code> URL
+rather than using the basic dogecoin address and amount; those fields provide backwards
+compatibility with older wallets.</p>
+<p>Please note that URI parameters are <em>percent-encoded</em> in line with RFC 3986;
+wallets MUST decode the parameters according to section 2.1. We strongly recommend
+using a URL/URI decoding library, which will handle all decoding requirements.
+(Otherwise, make sure to use something like <code>decodeURIComponent</code> or <code>QueryUnescape</code>
+functions on each parameter, <em>after</em> splitting up the URI string.)</p>
+<p>Wallets MUST use the <code>h</code> hash to verify that the <em>Payment Envelope</em> came from the
+vendor's nominated <em>Payment Relay</em>, as this protects against man-in-the-middle (MITM)
+attacks and redirection of funds.</p>
+<h3 id="wallet-implementation"><a class="header" href="#wallet-implementation">Wallet Implementation</a></h3>
+<ol>
+<li>Receive the QR Code URI from the host system</li>
+<li>Use a URL/URI decoding library to break apart the URI into a <em>scheme</em> (<code>dogecoin:</code>),
+a <em>path</em> component (the dogecoin address) and a series of <em>query parameters</em>:
+the <code>amount</code>, <code>dc</code> and <code>h</code> parameters.</li>
+<li>Check if both <code>dc</code> and <code>h</code> are present, non-empty parameters; this indicates a
+DogeConnect payment. Both parameters must be present for a secure interaction
+(for example, a missing <code>h</code> parameter suggests a MITM attack.)
+If either are missing or empty, fall back on the <em>dogecoin address</em> and <em>amount</em>
+parameters, i.e. treat it as a non-DogeConnect QR Code.</li>
+<li>Decode the Base64-encoded <code>h</code> parameter, using a library or Base64 decode routine.
+If this fails to decode, or doesn't yield 15 bytes of data, the request is invalid
+(this also suggests a MITM attack.)</li>
+<li>Concatenate <code>https://</code> onto the start of the <code>dc</code> parameter. It is always a
+<em>https</em> URL, but the <code>https://</code> is trimmed off to keep the QR Codes from
+growing too large.</li>
+<li>Fetch the DogeConnect <em>Payment Envelope</em> JSON payload from the URL created in step 4.
+If this request fails, make a few attempts before giving up, as sometimes there
+are spurious network errors (especially on mobile devices.)</li>
+<li>Decode the JSON <em>Payment Envelope</em>. If decoding fails, consider making another
+attempt (as part of the above retry process) as the response may be a spurious
+error from a network gateway; retries make the whole process more reliable.</li>
+<li>Take the <code>pubkey</code> field of the <em>Payment Envelope</em>, which is hex-encoded. Use a
+hex decode routine to decode to raw bytes, verify that you decoded 32 bytes,
+then use SHA-256 to hash those bytes.</li>
+<li>Compare the first 15 bytes of the hash from step 8 with the 15 bytes of the
+decoded <code>h</code> parameter from step 4. If they differ, the request is invalid and has
+likely been tampered with (this strongly suggests a MITM attack.)</li>
+<li>Proceed with <em>Payment Envelope</em> decoding and signature verification described
+in the next section.</li>
+</ol>
+<p>The goals of the above process are to recognise a DogeConnect QR Code, fetch the
+<em>Payment Envelope</em> from the vendor's nominated <em>Payment Relay</em>, and verify that
+the <em>Payment Envelope</em> actually came from the nominated <em>Payment Relay</em>, by
+verifying the <code>pubkey</code> hash included in the QR Code.</p>
+<p>This protects against man-in-the-middle (MITM) attacks and redirection of funds
+to a potential attacker.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="payment-envelope-schema"><a class="header" href="#payment-envelope-schema">Payment Envelope Schema</a></h2>
+<h3 id="connect-envelope"><a class="header" href="#connect-envelope">Connect Envelope</a></h3>
+<pre><code class="language-json">{
+	"version": "1.0",             // MUST be 1.0
+	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. Connect Payment)
+	"pubkey": "c8a6927d0a004..",  // Relay Public Key, BIP-340 Schnorr X-only (32 bytes)
+	"sig": "202d831c6437c..",     // Payload Signature, BIP-340 Schnorr (64 bytes)
+}
+</code></pre>
+<h3 id="connect-payment"><a class="header" href="#connect-payment">Connect Payment</a></h3>
+<pre><code class="language-json">{
+	"type": "payment",                       // MUST be "payment"
+	"id": "PID-123",                         // Relay-unique Payment ID
+	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
+	"timeout": 60,                           // Timeout in seconds, do not pay after this time
+	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
+    "fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string
+    "max_size": 10000,                       // Maximum size in bytes of payment tx
+	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG
+	"vendor_name": "Vendor Co",              // Vendor display name
+	"vendor_address": "123 Example St",      // Vendor business address (optional)
+	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
+	"fees": "1.0",                           // Fees subtotal, 8-DP string
+	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string
+	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
+	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
+    "fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
+	"items": [],                             // List of line items to display (Connect Items)
+	"outputs": [],                           // List of outputs to pay (Connect Outputs)
+}
+</code></pre>
+<h3 id="connect-item"><a class="header" href="#connect-item">Connect Item</a></h3>
+<pre><code class="language-json">{
+    "type": "item",                           // item, tax, fee, shipping, discount, donation
+	"id": "SK-101",                           // unique item ID or SKU
+	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG
+	"name": "Doge Plushie",                   // name to display
+	"desc": "One doge plushie in a soft bag", // item description to display
+	"count": 1,                               // number of units &gt;= 1
+	"unit": "38.99",                          // unit price, 8-DP string
+	"total": "38.99",                         // count x unit, 8-DP string
+	"tax": "1.9495",                          // tax on this item, 8-DP string (optional)
+}
+</code></pre>
+<h3 id="connect-output"><a class="header" href="#connect-output">Connect Output</a></h3>
+<pre><code class="language-json">{
+	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
+	"amount": "1.0",                                 // Amount, 8-DP string
+}
+</code></pre>
+<h3 id="8-dp-string"><a class="header" href="#8-dp-string">8-DP string</a></h3>
+<p>Fields marked <code>8-DP string</code> are DECIMAL numbers with up to 8 decimal places,
+which represent a Koinu value – the smallest unit of Dogecoin.</p>
+<p>They are strings to preserve accuracy; most JSON parsers treat numbers as
+<em>floating point</em>, which sacrifices some accuracy (e.g. a value of "0.1" cannot
+be stored <em>accurately</em> as a <em>floating point</em> number.)</p>
+<p>These can be parsed using a <em>Decimal</em> library, or code like <a href="https://github.com/dogeorg/dogeconnect-go/blob/main/koinu/parse.go">this</a>.</p>
+<h2 id="payment-envelope-verification"><a class="header" href="#payment-envelope-verification">Payment Envelope Verification</a></h2>
+<p>The DogeConnect <em>Payment Envelope</em> contains a Base64-encoded JSON payload,
+the <em>Payment Relay's</em> public key, and a digital signature of the payload
+signed by the <em>Payment Relay's</em> private key.</p>
+<p>Use the following steps to decode and verify the payload.</p>
+<ol>
+<li>Ensure you verify the <code>pubkey</code> hash as described in the <a href="payment_envelope/../qr_codes/qr_codes.html">Payment QR-Code</a> section.</li>
+<li>Decode the Base64-encoded <code>payload</code> field, yielding bytes.</li>
+<li>Decode the Hex-encoded <code>pubkey</code> and <code>sig</code> fields, yielding bytes.</li>
+<li>Compute the Double-SHA256 of the decoded payload bytes from step 2, i.e. <code>SHA-256(SHA-256(bytes))</code></li>
+<li>Apply BIP-340 <code>lift_x</code> algorithm on the <code>pubkey</code> bytes to recover the full Public Key.
+A BIP-340 library will supply this step (it's essentially parsing a compressed public key.)</li>
+<li>Verify the BIP-340 Schnorr signature, using the Double-SHA256 hash as the <code>message</code>, and the full Public Key and <code>sig</code>.
+A BIP-340 library will supply the signature verification algorithm.
+If this step fails, it suggests a MITM attack or faulty implementation.</li>
+<li>Parse the JSON payload bytes using a standard JSON parser.</li>
+<li>Check the <code>timeout</code> field: do not submit a payment transaction after the time <code>issued</code> + <code>timeout</code>.</li>
+<li>Display the payment information and ask the user to confirm payment.</li>
+<li>Create and sign a payment transaction and submit it to the <a href="payment_envelope/../payment_relay/relay.html">Payment Relay</a>.</li>
+</ol>
+<p>The goals of the above process are to verify that the <em>Payment Envelope</em> is cryptographically
+signed by the <em>Payment Relay's</em> private key, i.e. the envelope was created by the <em>Payment Relay</em>.</p>
+<p>A reference implementation of these algorithms exist at <a href="https://github.com/dogeorg/dogeconnect-go">github.com/dogeorg/dogeconnect-go</a>
+which can be packaged for mobile using <a href="https://pkg.go.dev/golang.org/x/mobile/cmd/gobind">gomobile bind</a>.</p>
+<h3 id="bip-340-implementations"><a class="header" href="#bip-340-implementations">BIP-340 Implementations</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Language</th><th>BIP-340 Implementation</th></tr></thead><tbody>
+<tr><td>C/C++</td><td><a href="https://github.com/bitcoin-core/secp256k1">https://github.com/bitcoin-core/secp256k1</a></td></tr>
+<tr><td>Go</td><td><a href="https://pkg.go.dev/github.com/btcsuite/btcd/btcec/v2/schnorr">https://pkg.go.dev/github.com/btcsuite/btcd/btcec/v2/schnorr</a></td></tr>
+<tr><td></td><td><a href="https://github.com/Yawning/secp256k1-voi">https://github.com/Yawning/secp256k1-voi</a></td></tr>
+<tr><td>Rust</td><td><a href="https://lib.rs/crates/secp256k1">https://lib.rs/crates/secp256k1</a></td></tr>
+<tr><td>C#</td><td><a href="https://github.com/zone117x/Secp256k1.Net">https://github.com/zone117x/Secp256k1.Net</a></td></tr>
+<tr><td>Java</td><td><a href="https://github.com/SamouraiDev/BIP340_Schnorr">https://github.com/SamouraiDev/BIP340_Schnorr</a></td></tr>
+<tr><td>Dart</td><td><a href="https://pub.dev/packages/bip340">https://pub.dev/packages/bip340</a></td></tr>
+<tr><td>Python</td><td><a href="https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py">https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py</a></td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="payment-relay"><a class="header" href="#payment-relay">Payment Relay</a></h1>
+<p>The <em>Payment Relay</em> base URL is found in the <code>relay</code> field of <em>Connect Payment</em>.</p>
+<p>The following Web API must be implemented by a <em>Payment Relay</em>:</p>
+<div class="table-wrapper"><table><thead><tr><th>URL</th><th>Method</th><th>Post Data</th><th>Response</th><th>Function</th></tr></thead><tbody>
+<tr><td><em>relay</em>/<strong>pay</strong></td><td>POST</td><td><em>Payment Response</em></td><td><em>Payment Reply</em></td><td>Submit payment tx</td></tr>
+<tr><td><em>relay</em>/<strong>status</strong></td><td>POST</td><td><em>Status Query</em></td><td><em>Status Reply</em></td><td>Query payment status</td></tr>
+</tbody></table>
+</div>
+<p>Requests and responses are JSON payloads; JSON <em>must</em> be UTF-8 encoded.</p>
+<p>All responses must include a <code>Cache-Control: no-store</code> header, to avoid
+leaking payment information into caches. Both endpoints additionally use
+the <em>POST</em> method to avoid caching edge-cases (e.g. error responses.)</p>
+<p>The <em>Relay</em> <strong>must</strong> implement the <code>pay</code> endpoint with <strong>idempotence</strong> in
+the following way: if the status of payment <code>id</code> is already <code>accepted</code> or
+<code>confirmed</code>, it responds to another <code>pay</code> request with that status, ignoring
+the supplied <code>tx</code>. This is because wallets will retry their <code>pay</code> request
+if they did not receive or process the first reply.</p>
+<h3 id="payment-response"><a class="header" href="#payment-response">Payment Response</a></h3>
+<p>This is the wallet's <em>response</em> to the original <em>Payment Request</em>.</p>
+<pre><code class="language-json">{
+    "id": "PID-123",                // Relay-unique Payment ID from Connect Payment
+	"tx": "489c47f8a3ba3293737..",  // Hex-encoded signed dogecoin transaction
+    "refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
+}
+</code></pre>
+<h3 id="payment-reply"><a class="header" href="#payment-reply">Payment Reply</a></h3>
+<p>This is the <em>Payment Relay's</em> reply from the <code>pay</code> URL.</p>
+<pre><code class="language-json">{
+    "id": "PID-123",       // Relay-unique Payment ID from Connect Payment
+	"status": "accepted",  // One of: accepted | confirmed | declined
+    "reason": "",          // Reason for decline (message, optional)
+    "required": 5,         // Number of block confirmations required (risk analysis)
+    "confirmed": 0,        // Current number of block confirmations on-chain
+    "due_sec": 300,        // Estimated time in seconds until confirmed
+}
+</code></pre>
+<p>The status will be <code>accepted</code> if the <em>Relay</em> requires one or more block
+confirmations on the blockchain, reflected in the <code>required</code> field.
+The status may be <code>confirmed</code> if the <em>Relay</em> deems the payment low-risk.</p>
+<p>If the transaction is malformed, or does not pay the requested amounts to
+the requested addresses, the POST will be rejected with a <strong>400 Bad Request</strong>
+http response. This represents a <em>programming error</em> in the wallet.
+A <em>bad request</em> should not be retried.</p>
+<p>Payments may also be rejected with a <code>declined</code> status, in the case that
+the <em>Vendor</em> or their nominated <em>Relay</em> believes the transaction is too
+risky. This represents a <em>customer-specific</em> problem. A declined request
+should not be retried.</p>
+<p>Wallets should also be prepared to handle 500 and 503 http errors,
+and other spurious errors, which indicate a temporary <em>Relay</em> or
+network problem. Wallets <em>should</em> retry the request a few times
+(with a small random delay) to increase reliability.</p>
+<p>The final three fields, <code>required</code>, <code>confirmed</code> and <code>due_sec</code> are in common
+with the <em>Status Reply</em> below.</p>
+<h3 id="status-query"><a class="header" href="#status-query">Status Query</a></h3>
+<p>This allows the wallet to query the current status of a payment.</p>
+<pre><code class="language-json">{
+    "id": "PID-123"  // Relay-unique Payment ID from Connect Payment
+}
+</code></pre>
+<h3 id="status-reply"><a class="header" href="#status-reply">Status Reply</a></h3>
+<p>This is the <em>Payment Relay's</em> reply from the <code>status</code> URL.</p>
+<pre><code class="language-json">{
+    "id": "PID-123",        // Relay-unique Payment ID from Connect Payment
+	"status": "accepted",   // unpaid | accepted | confirmed
+    "required": 5,          // Number of block confirmations required
+    "confirmed": 4,         // Current number of block confirmations on-chain
+    "due_sec": 30,          // Estimated time in seconds until confirmed
+}
+</code></pre>
+<p>Payments transition from <code>unpaid</code> to <code>accepted</code> after the signed transaction
+is submitted to the <code>pay</code> endpoint (provided payment was accepted.)</p>
+<p>After the required number of block confirmations have been seen on-chain,
+the payment status transitions to <code>confirmed</code>.</p>
+<p>When the payment status is <code>confirmed</code>, the <code>confirmed</code> field is always greater
+or equal to <code>required</code>, and the <code>due_sec</code> field is alway zero.</p>
+<p>Note: there are some edge-cases where the <code>confirmed</code> count can reduce,
+i.e. during a short-term blockchain fork.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace.js"></script>
+        <script src="editor.js"></script>
+        <script src="mode-rust.js"></script>
+        <script src="theme-dawn.js"></script>
+        <script src="theme-tomorrow_night.js"></script>
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="mermaid.min.js"></script>
+        <script src="mermaid-init.js"></script>
+
+        <script>
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
