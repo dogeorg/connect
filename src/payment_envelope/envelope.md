@@ -18,16 +18,19 @@
 	"type": "payment",                       // MUST be "payment"
 	"id": "PID-123",                         // Relay-unique Payment ID
 	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
-	"timeout": 60,                           // Timeout in seconds
+	"timeout": 60,                           // Timeout in seconds, do not pay after this time
 	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
+    "fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string
+    "max_size": 10000,                       // Maximum size in bytes of payment tx
 	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG
 	"vendor_name": "Vendor Co",              // Vendor display name
 	"vendor_address": "123 Example St",      // Vendor business address (optional)
-	"total": "420.69",                       // Total amount including fees and taxes, DECMIAL string
-	"fees": "1.0",                           // Fee subtotal, DECMIAL string
-	"taxes": "5.31",                         // Taxes subtotal, DECMIAL string
-	"fiat_total": "5.00",                    // Total in fiat currency, DECMIAL string (optional)
-    "fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total)
+	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
+	"fees": "1.0",                           // Fees subtotal, 8-DP string
+	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string
+	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
+	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
+    "fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
 	"items": [],                             // List of line items to display (Connect Items)
 	"outputs": [],                           // List of outputs to pay (Connect Outputs)
 }
@@ -43,8 +46,9 @@
 	"name": "Doge Plushie",                   // name to display
 	"desc": "One doge plushie in a soft bag", // item description to display
 	"count": 1,                               // number of units >= 1
-	"cost": "414.38",                         // unit price, DECMIAL string
-	"total": "414.38",                        // count x cost, DECMIAL string
+	"unit": "38.99",                          // unit price, 8-DP string
+	"total": "38.99",                         // count x unit, 8-DP string
+	"tax": "1.9495",                          // tax on this item, 8-DP string (optional)
 }
 ```
 
@@ -53,9 +57,21 @@
 ```json
 {
 	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
-	"amount": "1.0",                                 // Amount, DECMIAL string
+	"amount": "1.0",                                 // Amount, 8-DP string
 }
 ```
+
+### 8-DP string
+
+Fields marked `8-DP string` are DECIMAL numbers with up to 8 decimal places,
+which represent a Koinu value – the smallest unit of Dogecoin.
+
+They are strings to preserve accuracy; most JSON parsers treat numbers as
+_floating point_, which sacrifices some accuracy (e.g. a value of "0.1" cannot
+be stored _accurately_ as a _floating point_ number.)
+
+These can be parsed using a _Decimal_ library, or code like [this](https://github.com/dogeorg/dogeconnect-go/blob/main/koinu/parse.go).
+
 
 ## Payment Envelope Verification
 
