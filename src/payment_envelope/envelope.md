@@ -18,16 +18,21 @@
 	"type": "payment",                       // MUST be "payment"
 	"id": "PID-123",                         // Relay-unique Payment ID
 	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
-	"timeout": 60,                           // Timeout in seconds, do not pay after this time
+	"timeout": 60,                           // Timeout in seconds, do not pay after this time (optional)
 	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
-    "fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string
-    "max_size": 10000,                       // Maximum size in bytes of payment tx
-	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG
+    "fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string (optional)
+    "max_size": 10000,                       // Maximum size in bytes of payment tx (optional)
+	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG (optional)
 	"vendor_name": "Vendor Co",              // Vendor display name
 	"vendor_address": "123 Example St",      // Vendor business address (optional)
+	"vendor_url": "https://example.com",     // Vendor website URL (optional)
+	"vendor_invoice_url": "https://example.com/inv/123", // URL to view invoice on vendor's site (optional)
+	"invoice_number": "INV-2025-0042",       // Vendor's unique invoice reference (optional)
+	"order_number": "073",                   // Short customer-facing order identifier (optional)
+	"note": "Thank you for your order!",     // Free-text note from vendor to customer (optional)
 	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
-	"fees": "1.0",                           // Fees subtotal, 8-DP string
-	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string
+	"fees": "1.0",                           // Fees subtotal, 8-DP string (optional)
+	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string (optional)
 	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
 	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
     "fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
@@ -42,9 +47,9 @@
 {
     "type": "item",                           // item, tax, fee, shipping, discount, donation
 	"id": "SK-101",                           // unique item ID or SKU
-	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG
+	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG (optional)
 	"name": "Doge Plushie",                   // name to display
-	"desc": "One doge plushie in a soft bag", // item description to display
+	"desc": "One doge plushie in a soft bag", // item description to display (optional)
 	"count": 1,                               // number of units >= 1
 	"unit": "38.99",                          // unit price, 8-DP string
 	"total": "38.99",                         // count x unit, 8-DP string
