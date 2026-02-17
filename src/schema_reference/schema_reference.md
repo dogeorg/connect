@@ -42,7 +42,7 @@ See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 | `expired` | Payment timeout has elapsed |
 | `invalid_tx` | Transaction is malformed or cannot be decoded |
 | `invalid_outputs` | Transaction does not pay the correct amounts/addresses |
-| `internal` | Relay internal error |
+| `invalid_token` | Relay token is missing, corrupt, or failed verification |
 
 
 ## Connect Envelope
@@ -77,15 +77,16 @@ The decoded payload inside a Connect Envelope.
 	"issued": "2006-01-02T15:04:05-07:00",
 	"timeout": 60,
 	"relay": "https://relay.example.com/doge/v1",
+	"relay_token": "eyJpZCI6IlBJRC...",
 	"fee_per_kb": "0.01001386",
 	"max_size": 10000,
 	"vendor_icon": "https://example.com/icon.png",
 	"vendor_name": "Vendor Co",
 	"vendor_address": "123 Example St",
 	"vendor_url": "https://example.com",
-	"vendor_invoice_url": "https://example.com/inv/123",
-	"invoice_number": "INV-2025-0042",
-	"order_number": "073",
+	"vendor_order_url": "https://example.com/..",
+	"vendor_order_id": "INV-2025-0042",
+	"order_reference": "A073",
 	"note": "Thank you for your order!",
 	"total": "41.9395",
 	"fees": "1.0",
@@ -103,17 +104,18 @@ The decoded payload inside a Connect Envelope.
 | `type` | string | yes | PaymentType enum; MUST be `"payment"` |
 | `id` | string | yes | Relay-unique payment ID |
 | `issued` | string | yes | RFC 3339 timestamp |
-| `timeout` | integer | no | Timeout in seconds; do not pay after `issued + timeout` |
+| `timeout` | integer | yes | Timeout in seconds; do not pay after `issued + timeout` |
 | `relay` | string | yes | Payment Relay base URL |
-| `fee_per_kb` | string | no | Minimum fee per 1000 bytes in payment tx, 8-DP string |
-| `max_size` | integer | no | Maximum size in bytes of payment tx |
+| `relay_token` | string | no | Opaque relay-generated token; wallet MUST echo in Payment Submission if present |
+| `fee_per_kb` | string | yes | Minimum fee per 1000 bytes in payment tx, 8-DP string |
+| `max_size` | integer | yes | Maximum size in bytes of payment tx |
 | `vendor_icon` | string | no | Vendor icon URL (JPG or PNG) |
 | `vendor_name` | string | yes | Vendor display name |
 | `vendor_address` | string | no | Vendor business address |
 | `vendor_url` | string | no | Vendor website URL |
-| `vendor_invoice_url` | string | no | URL to view this invoice on vendor's site |
-| `invoice_number` | string | no | Vendor's unique invoice reference |
-| `order_number` | string | no | Short customer-facing order identifier |
+| `vendor_order_url` | string | no | URL to view this order on vendor's site |
+| `vendor_order_id` | string | no | Vendor's unique order identifier |
+| `order_reference` | string | no | Short customer-facing order identifier |
 | `note` | string | no | Free-text note from vendor to customer |
 | `total` | string | yes | Total including fees and taxes, 8-DP string |
 | `fees` | string | no | Fees subtotal, 8-DP string |
@@ -181,7 +183,8 @@ The wallet's submission to the relay's `pay` endpoint in response to a Connect P
 {
 	"id": "PID-123",
 	"tx": "489c47f8a3ba3293737..",
-	"refund": "DKY8dUTQthSX.."
+	"refund": "DKY8dUTQthSX..",
+	"relay_token": "eyJpZCI6IlBJRC..."
 }
 ```
 
@@ -190,6 +193,7 @@ The wallet's submission to the relay's `pay` endpoint in response to a Connect P
 | `id` | string | yes | Relay-unique payment ID from Connect Payment |
 | `tx` | string | yes | Hex-encoded signed Dogecoin transaction |
 | `refund` | string | no | Dogecoin address for refunds (recommended) |
+| `relay_token` | string | conditional | Opaque relay token; required when the Connect Payment contained a `relay_token` |
 
 
 ## Payment Status

@@ -22,15 +22,28 @@ the supplied `tx`. This is because wallets will retry their `pay` request
 if they did not receive or process the first reply.
 
 
+### Relay Token
+
+A _Relay_ may include an opaque `relay_token` in the _Connect Payment_. If present,
+the wallet **must** echo it back verbatim in the _Payment Submission_. The token is
+opaque to the wallet — it should not attempt to parse or interpret its contents.
+
+The relay token enables **stateless validation**: the relay can embed whatever
+parameters it needs inside the token, avoiding additional lookups at submission time.
+
+The token format is entirely up to the relay implementation.
+
+
 ### Payment Submission
 
 The wallet's submission to the relay's `pay` endpoint in response to a _Connect Payment_.
 
 ```json
 {
-    "id": "PID-123",                // Relay-unique Payment ID from Connect Payment
+	"id": "PID-123",                    // Relay-unique Payment ID from Connect Payment
 	"tx": "489c47f8a3ba3293737..",  // Hex-encoded signed dogecoin transaction
-    "refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
+	"refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
+	"relay_token": "eyJpZCI6IlBJRC...", // Relay token from Connect Payment, if present
 }
 ```
 
@@ -43,12 +56,12 @@ Both the `pay` and `status` endpoints return a _Payment Status_ response.
 
 ```json
 {
-    "id": "PID-123",
+	"id": "PID-123",
 	"status": "accepted",
-    "txid": "a1b2c3d4e5..",
-    "required": 5,
-    "confirmed": 0,
-    "due_sec": 300
+	"txid": "a1b2c3d4e5..",
+	"required": 5,
+	"confirmed": 0,
+	"due_sec": 300
 }
 ```
 
@@ -56,9 +69,9 @@ Both the `pay` and `status` endpoints return a _Payment Status_ response.
 
 ```json
 {
-    "id": "PID-123",
+	"id": "PID-123",
 	"status": "declined",
-    "reason": "Transaction deemed too risky"
+	"reason": "Transaction deemed too risky"
 }
 ```
 
@@ -92,8 +105,8 @@ i.e. during a short-term blockchain fork.
 
 ```json
 {
-    "error": "invalid_tx",
-    "message": "Transaction outputs do not match requested amounts"
+	"error": "invalid_tx",
+	"message": "Transaction outputs do not match requested amounts"
 }
 ```
 
@@ -105,10 +118,10 @@ i.e. during a short-term blockchain fork.
 | HTTP | Body | Meaning |
 |---|---|---|
 | 200 | Payment Status | Accepted or confirmed |
-| 400 | Error Response | Programming error (malformed tx, wrong outputs, expired) |
+| 400 | Error Response | Programming error (malformed tx, wrong outputs, expired, invalid token) |
 | 403 | Payment Status | Declined (`status: "declined"`) |
 | 404 | Error Response | Unknown payment ID |
-| 500 / 503 | — | Server error; retry with backoff |
+| 500 / 503 | - | Transient server error; retry with backoff |
 
 #### `status` endpoint
 
@@ -116,11 +129,12 @@ i.e. during a short-term blockchain fork.
 |---|---|---|
 | 200 | Payment Status | Status returned |
 | 404 | Error Response | Unknown payment ID |
-| 500 / 503 | — | Server error; retry with backoff |
+| 500 / 503 | - | Transient server error; retry with backoff |
 
 A **400** or **403** response indicates a permanent failure; wallets should
-not retry. A **500** or **503** response indicates a temporary _Relay_ or
-network problem; wallets _should_ retry a few times with a small random delay.
+not retry. A **500** or **503** response is transient — the wallet should
+assume the relay will recover and retry a few times with exponential backoff
+and a small random jitter.
 
 
 ### Status Query
@@ -129,6 +143,6 @@ This allows the wallet to query the current status of a payment.
 
 ```json
 {
-    "id": "PID-123"  // Relay-unique Payment ID from Connect Payment
+	"id": "PID-123"  // Relay-unique Payment ID from Connect Payment
 }
 ```
