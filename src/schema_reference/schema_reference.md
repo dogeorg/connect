@@ -8,11 +8,11 @@ See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 
 ## Enums
 
-### PaymentType
+### EnvelopeType
 
 | Value | Description |
 |---|---|
-| `payment` | A payment request |
+| `payment` | Connect Payment envelope |
 
 ### ItemType
 
@@ -22,7 +22,7 @@ See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 | `tax` | Tax line item |
 | `fee` | Fee line item |
 | `shipping` | Shipping charge |
-| `discount` | Discount (negative amount) |
+| `discount` | Discount (amount MUST be negative) |
 | `donation` | Donation |
 
 ### PaymentStatus
@@ -101,13 +101,13 @@ The decoded payload inside a Connect Envelope.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `type` | string | yes | PaymentType enum; MUST be `"payment"` |
+| `type` | string | yes | EnvelopeType enum; MUST be `"payment"`. Exists for forward compatibility with future envelope types |
 | `id` | string | yes | Relay-unique payment ID |
 | `issued` | string | yes | RFC 3339 timestamp |
 | `timeout` | integer | yes | Timeout in seconds; do not pay after `issued + timeout` |
 | `relay` | string | yes | Payment Relay base URL |
 | `relay_token` | string | no | Opaque relay-generated token; wallet MUST echo in Payment Submission if present |
-| `fee_per_kb` | string | yes | Minimum fee per 1000 bytes in payment tx, 8-DP string |
+| `fee_per_kb` | string | yes | Minimum fee per 1000 bytes; wallet MUST construct a transaction meeting at least this fee rate, 8-DP string |
 | `max_size` | integer | yes | Maximum size in bytes of payment tx |
 | `vendor_icon` | string | no | Vendor icon URL (JPG or PNG) |
 | `vendor_name` | string | yes | Vendor display name |
@@ -192,7 +192,7 @@ The wallet's submission to the relay's `pay` endpoint in response to a Connect P
 |---|---|---|---|
 | `id` | string | yes | Relay-unique payment ID from Connect Payment |
 | `tx` | string | yes | Hex-encoded signed Dogecoin transaction |
-| `refund` | string | no | Dogecoin address for refunds (recommended) |
+| `refund` | string | no | Customer-provided Dogecoin address for refunds; tx input addresses may not return funds to the customer (e.g. exchange deposits), so this provides a guaranteed return path (recommended) |
 | `relay_token` | string | conditional | Opaque relay token; required when the Connect Payment contained a `relay_token` |
 
 

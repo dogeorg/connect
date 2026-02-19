@@ -21,7 +21,7 @@
 	"timeout": 60,                           // Timeout in seconds, do not pay after this time
 	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
 	"relay_token": "eyJpZCI6IlBJRC...",      // Opaque relay-generated token (optional)
-	"fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string
+	"fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes; wallet MUST meet this fee rate, 8-DP string
 	"max_size": 10000,                       // Maximum size in bytes of payment tx
 	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG (optional)
 	"vendor_name": "Vendor Co",              // Vendor display name
