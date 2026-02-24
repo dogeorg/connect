@@ -49,14 +49,16 @@ See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 
 Signed wrapper around a Connect Payment payload.
 
+<!-- ANCHOR: connect_envelope -->
 ```json
 {
-	"version": "1.0",
-	"payload": "YTc2ZDc2MzEyZ..",
-	"pubkey": "c8a6927d0a004..",
-	"sig": "202d831c6437c.."
+	"version": "1.0",             // MUST be 1.0
+	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. Connect Payment)
+	"pubkey": "c8a6927d0a004..",  // Relay Public Key, BIP-340 Schnorr X-only (32 bytes)
+	"sig": "202d831c6437c.."     // Payload Signature, BIP-340 Schnorr (64 bytes)
 }
 ```
+<!-- ANCHOR_END: connect_envelope -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -70,34 +72,36 @@ Signed wrapper around a Connect Payment payload.
 
 The decoded payload inside a Connect Envelope.
 
+<!-- ANCHOR: connect_payment -->
 ```json
 {
-	"type": "payment",
-	"id": "PID-123",
-	"issued": "2006-01-02T15:04:05-07:00",
-	"timeout": 60,
-	"relay": "https://relay.example.com/doge/v1",
-	"relay_token": "eyJpZCI6IlBJRC...",
-	"fee_per_kb": "0.01001386",
-	"max_size": 10000,
-	"vendor_icon": "https://example.com/icon.png",
-	"vendor_name": "Vendor Co",
-	"vendor_address": "123 Example St",
-	"vendor_url": "https://example.com",
-	"vendor_order_url": "https://example.com/..",
-	"vendor_order_id": "INV-2025-0042",
-	"order_reference": "A073",
-	"note": "Thank you for your order!",
-	"total": "41.9395",
-	"fees": "1.0",
-	"taxes": "1.9495",
-	"fiat_total": "5.00",
-	"fiat_tax": "0.23",
-	"fiat_currency": "USD",
-	"items": [],
-	"outputs": []
+	"type": "payment",                       // MUST be "payment"
+	"id": "PID-123",                         // Relay-unique Payment ID
+	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
+	"timeout": 60,                           // Timeout in seconds, do not pay after this time
+	"relay": "https://relay.example.com/..", // Payment Relay to submit payment tx
+	"relay_token": "eyJpZCI6IlBJRC...",      // Opaque relay-generated token (optional)
+	"fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes, 8-DP string
+	"max_size": 10000,                       // Maximum size in bytes of payment tx
+	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG (optional)
+	"vendor_name": "Vendor Co",              // Vendor display name
+	"vendor_address": "123 Example St",      // Vendor business address (optional)
+	"vendor_url": "https://example.com",     // Vendor website URL (optional)
+	"vendor_order_url": "https://example.com/..", // URL to view order on vendor's site (optional)
+	"vendor_order_id": "INV-2025-0042",      // Vendor's unique order identifier (optional)
+	"order_reference": "A073",               // Short customer-facing order identifier (optional)
+	"note": "Thank you for your order!",     // Free-text note from vendor to customer (optional)
+	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
+	"fees": "1.0",                           // Fees subtotal, 8-DP string (optional)
+	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string (optional)
+	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
+	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
+	"fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
+	"items": [],                             // List of line items to display (Connect Items)
+	"outputs": []                            // List of outputs to pay (Connect Outputs)
 }
 ```
+<!-- ANCHOR_END: connect_payment -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -131,19 +135,21 @@ The decoded payload inside a Connect Envelope.
 
 A line item within a Connect Payment.
 
+<!-- ANCHOR: connect_item -->
 ```json
 {
-	"type": "item",
-	"id": "SK-101",
-	"icon": "https://example.com/itm/ic.png",
-	"name": "Doge Plushie",
-	"desc": "One doge plushie in a soft bag",
-	"count": 1,
-	"unit": "38.99",
-	"total": "38.99",
-	"tax": "1.9495"
+	"type": "item",                           // item, tax, fee, shipping, discount, donation
+	"id": "SK-101",                           // unique item ID or SKU
+	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG (optional)
+	"name": "Doge Plushie",                   // name to display
+	"desc": "One doge plushie in a soft bag", // item description to display (optional)
+	"count": 1,                               // number of units >= 1
+	"unit": "38.99",                          // unit price, 8-DP string
+	"total": "38.99",                         // count x unit, 8-DP string
+	"tax": "1.9495"                           // tax on this item, 8-DP string (optional)
 }
 ```
+<!-- ANCHOR_END: connect_item -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -162,12 +168,14 @@ A line item within a Connect Payment.
 
 A transaction output the wallet must pay.
 
+<!-- ANCHOR: connect_output -->
 ```json
 {
-	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL",
-	"amount": "1.0"
+	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
+	"amount": "1.0"                                   // Amount, 8-DP string
 }
 ```
+<!-- ANCHOR_END: connect_output -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -179,14 +187,16 @@ A transaction output the wallet must pay.
 
 The wallet's submission to the relay's `pay` endpoint in response to a Connect Payment.
 
+<!-- ANCHOR: payment_submission -->
 ```json
 {
-	"id": "PID-123",
-	"tx": "489c47f8a3ba3293737..",
-	"refund": "DKY8dUTQthSX..",
-	"relay_token": "eyJpZCI6IlBJRC..."
+	"id": "PID-123",                    // Relay-unique Payment ID from Connect Payment
+	"tx": "489c47f8a3ba3293737..",      // Hex-encoded signed dogecoin transaction
+	"refund": "DKY8dUTQthSX..",        // Dogecoin address for refunds (recommended)
+	"relay_token": "eyJpZCI6IlBJRC..." // Relay token from Connect Payment, if present
 }
 ```
+<!-- ANCHOR_END: payment_submission -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -200,18 +210,28 @@ The wallet's submission to the relay's `pay` endpoint in response to a Connect P
 
 The relay's response from both the `pay` and `status` endpoints.
 
+<!-- ANCHOR: payment_status_accepted -->
 ```json
 {
 	"id": "PID-123",
 	"status": "accepted",
-	"reason": "...",
 	"txid": "a1b2c3d4e5..",
-	"confirmed_at": "2006-01-02T15:04:05-07:00",
 	"required": 5,
 	"confirmed": 0,
 	"due_sec": 300
 }
 ```
+<!-- ANCHOR_END: payment_status_accepted -->
+
+<!-- ANCHOR: payment_status_declined -->
+```json
+{
+	"id": "PID-123",
+	"status": "declined",
+	"reason": "Transaction deemed too risky"
+}
+```
+<!-- ANCHOR_END: payment_status_declined -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -229,11 +249,13 @@ The relay's response from both the `pay` and `status` endpoints.
 
 Query the current status of a payment, submitted to the relay's `status` endpoint.
 
+<!-- ANCHOR: status_query -->
 ```json
 {
-	"id": "PID-123"
+	"id": "PID-123" // Relay-unique Payment ID from Connect Payment
 }
 ```
+<!-- ANCHOR_END: status_query -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -244,12 +266,14 @@ Query the current status of a payment, submitted to the relay's `status` endpoin
 
 Returned by the relay when a request fails.
 
+<!-- ANCHOR: error_response -->
 ```json
 {
 	"error": "invalid_tx",
 	"message": "Transaction outputs do not match requested amounts"
 }
 ```
+<!-- ANCHOR_END: error_response -->
 
 | Field | Type | Required | Description |
 |---|---|---|---|

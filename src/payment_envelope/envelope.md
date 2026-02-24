@@ -2,70 +2,19 @@
 
 ### Connect Envelope
 
-```json
-{
-	"version": "1.0",             // MUST be 1.0
-	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. Connect Payment)
-	"pubkey": "c8a6927d0a004..",  // Relay Public Key, BIP-340 Schnorr X-only (32 bytes)
-	"sig": "202d831c6437c..",     // Payload Signature, BIP-340 Schnorr (64 bytes)
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_envelope}}
 
 ### Connect Payment
 
-```json
-{
-	"type": "payment",                       // MUST be "payment"
-	"id": "PID-123",                         // Relay-unique Payment ID
-	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
-	"timeout": 60,                           // Timeout in seconds, do not pay after this time
-	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
-	"relay_token": "eyJpZCI6IlBJRC...",      // Opaque relay-generated token (optional)
-	"fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes; wallet MUST meet this fee rate, 8-DP string
-	"max_size": 10000,                       // Maximum size in bytes of payment tx
-	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG (optional)
-	"vendor_name": "Vendor Co",              // Vendor display name
-	"vendor_address": "123 Example St",      // Vendor business address (optional)
-	"vendor_url": "https://example.com",     // Vendor website URL (optional)
-	"vendor_order_url": "https://example.com/..", // URL to view order on vendor's site (optional)
-	"vendor_order_id": "INV-2025-0042",      // Vendor's unique order identifier (optional)
-	"order_reference": "A073",               // Short customer-facing order identifier (optional)
-	"note": "Thank you for your order!",     // Free-text note from vendor to customer (optional)
-	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
-	"fees": "1.0",                           // Fees subtotal, 8-DP string (optional)
-	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string (optional)
-	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
-	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
-	"fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
-	"items": [],                             // List of line items to display (Connect Items)
-	"outputs": [],                           // List of outputs to pay (Connect Outputs)
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_payment}}
 
 ### Connect Item
 
-```json
-{
-	"type": "item",                           // item, tax, fee, shipping, discount, donation
-	"id": "SK-101",                           // unique item ID or SKU
-	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG (optional)
-	"name": "Doge Plushie",                   // name to display
-	"desc": "One doge plushie in a soft bag", // item description to display (optional)
-	"count": 1,                               // number of units >= 1
-	"unit": "38.99",                          // unit price, 8-DP string
-	"total": "38.99",                         // count x unit, 8-DP string
-	"tax": "1.9495",                          // tax on this item, 8-DP string (optional)
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_item}}
 
 ### Connect Output
 
-```json
-{
-	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
-	"amount": "1.0",                                 // Amount, 8-DP string
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_output}}
 
 ### 8-DP string
 

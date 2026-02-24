@@ -38,14 +38,7 @@ The token format is entirely up to the relay implementation.
 
 The wallet's submission to the relay's `pay` endpoint in response to a _Connect Payment_.
 
-```json
-{
-	"id": "PID-123",                    // Relay-unique Payment ID from Connect Payment
-	"tx": "489c47f8a3ba3293737..",  // Hex-encoded signed dogecoin transaction
-	"refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
-	"relay_token": "eyJpZCI6IlBJRC...", // Relay token from Connect Payment, if present
-}
-```
+{{#include ../schema_reference/schema_reference.md:payment_submission}}
 
 
 ### Payment Status
@@ -54,26 +47,11 @@ Both the `pay` and `status` endpoints return a _Payment Status_ response.
 
 **200 — Accepted:**
 
-```json
-{
-	"id": "PID-123",
-	"status": "accepted",
-	"txid": "a1b2c3d4e5..",
-	"required": 5,
-	"confirmed": 0,
-	"due_sec": 300
-}
-```
+{{#include ../schema_reference/schema_reference.md:payment_status_accepted}}
 
 **403 — Declined:**
 
-```json
-{
-	"id": "PID-123",
-	"status": "declined",
-	"reason": "Transaction deemed too risky"
-}
-```
+{{#include ../schema_reference/schema_reference.md:payment_status_declined}}
 
 The `status` field is a _PaymentStatus_ enum value. The `txid` field
 contains the hex-encoded transaction ID and is present whenever the
@@ -103,12 +81,7 @@ i.e. during a short-term blockchain fork.
 
 ### Error Response
 
-```json
-{
-	"error": "invalid_tx",
-	"message": "Transaction outputs do not match requested amounts"
-}
-```
+{{#include ../schema_reference/schema_reference.md:error_response}}
 
 
 ### HTTP Status Codes
@@ -141,8 +114,4 @@ and a small random jitter.
 
 This allows the wallet to query the current status of a payment.
 
-```json
-{
-	"id": "PID-123"  // Relay-unique Payment ID from Connect Payment
-}
-```
+{{#include ../schema_reference/schema_reference.md:status_query}}
