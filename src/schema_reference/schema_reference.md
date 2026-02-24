@@ -81,8 +81,8 @@ The decoded payload inside a Connect Envelope.
 	"timeout": 60,                           // Timeout in seconds, do not pay after this time
 	"relay": "https://relay.example.com/..", // Payment Relay to submit payment tx
 	"relay_token": "eyJpZCI6IlBJRC...",      // Opaque relay-generated token (optional)
-	"fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes, 8-DP string
-	"max_size": 10000,                       // Maximum size in bytes of payment tx
+	"fee_per_kb": "0.01001386",              // Min fee per 1000 bytes the relay will accept, 8-DP string
+	"max_size": 10000,                       // Max tx size in bytes the relay will accept
 	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG (optional)
 	"vendor_name": "Vendor Co",              // Vendor display name
 	"vendor_address": "123 Example St",      // Vendor business address (optional)
@@ -111,8 +111,8 @@ The decoded payload inside a Connect Envelope.
 | `timeout` | integer | yes | Timeout in seconds; do not pay after `issued + timeout` |
 | `relay` | string | yes | Payment Relay base URL |
 | `relay_token` | string | no | Opaque relay-generated token; wallet MUST echo in Payment Submission if present |
-| `fee_per_kb` | string | yes | Minimum fee per 1000 bytes; wallet MUST construct a transaction meeting at least this fee rate, 8-DP string |
-| `max_size` | integer | yes | Maximum size in bytes of payment tx |
+| `fee_per_kb` | string | yes | Minimum fee per 1000 bytes that the Payment Relay is willing to accept. Wallet MUST construct a transaction meeting at least this fee rate, 8-DP string |
+| `max_size` | integer | yes | Maximum size of transaction in bytes that the Payment Relay is willing to accept |
 | `vendor_icon` | string | no | Vendor icon URL (JPG or PNG) |
 | `vendor_name` | string | yes | Vendor display name |
 | `vendor_address` | string | no | Vendor business address |
