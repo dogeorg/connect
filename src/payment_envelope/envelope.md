@@ -60,19 +60,32 @@ broadcasting data, not just making a payment.
 
 ### Connect Output
 
+**P2PKH output** (`type` defaults to `"p2pkh"` if omitted):
+
 ```json
 {
+	"type": "p2pkh",                                 // optional, default
 	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
 	"amount": "1.0",                                 // Amount, 8-DP string
-	"data": "48656c6c6f",                            // Hex-encoded OP_RETURN payload (optional)
 }
 ```
 
-The `data` field is optional. When present, the wallet MUST include an additional
-`OP_RETURN` output in the transaction carrying the decoded bytes. The `address` and
-`amount` fields remain required and produce a normal payment output alongside it.
+**Data-only output** (`type` is `"data"`):
 
-The `data` value MUST be a valid hex string (even number of hex characters.) The
+```json
+{
+	"type": "data",           // OP_RETURN output
+	"data": "48656c6c6f",    // Hex-encoded OP_RETURN payload
+}
+```
+
+The `type` field defaults to `"p2pkh"` when omitted, for backwards compatibility.
+
+For `"p2pkh"` outputs, `address` and `amount` are required.
+
+For `"data"` outputs, `data` is required and `address` and `amount` MUST be omitted.
+The wallet MUST create an `OP_RETURN` output carrying the decoded bytes.
+The `data` value MUST be a valid hex string (even number of hex characters) and the
 decoded payload MUST NOT exceed 80 bytes, which is the maximum OP_RETURN data size.
 
 ### 8-DP string
