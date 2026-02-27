@@ -52,23 +52,25 @@ Wallets MUST use the `h` hash to verify that the _Payment Envelope_ came from th
 vendor's nominated _Payment Relay_, as this protects against man-in-the-middle (MITM)
 attacks and redirection of funds.
 
-### The `dc:` URI Scheme
+### The `dogeconnect:` URI Scheme
 
-DogeConnect-aware wallets may also support the dedicated `dc:` URI scheme, which
+DogeConnect-aware wallets MUST also support the dedicated `dogeconnect:` URI scheme, which
 is purpose-built for DogeConnect and requires no backwards compatibility with
-legacy wallets.
+legacy wallets. Typically, `dogeconnect:` QR Codes are used when the vendor requires
+`data` outputs in the transaction, or when the vendor wants to control transaction
+quality (e.g. minimum fee paid.)
 
 ```
-dc:example.com/dc/xyz123?h=p212MS4KXZBX5uDNXWmB
+dogeconnect:example.com/dc/xyz123?h=p212MS4KXZBX5uDNXWmB
 ```
 
-The path component of the `dc:` URI is the URL of the _Payment Envelope_, with the
+The path component of the `dogeconnect:` URI is the URL of the _Payment Envelope_, with the
 `https://` prefix trimmed off (as with the `dc` parameter in the `dogecoin:` scheme.)
 The `h` query parameter is the same _Payment Relay_ public key hash used in the
 `dogecoin:` scheme.
 
 Because this scheme is exclusively for DogeConnect, there are no fallback address
-or amount fields — wallets that scan a `dc:` QR Code MUST support DogeConnect.
+or amount fields — wallets that scan a `dogeconnect:` QR Code MUST support DogeConnect.
 
 ### Wallet Implementation
 
@@ -104,10 +106,10 @@ or amount fields — wallets that scan a `dc:` QR Code MUST support DogeConnect.
 10. Proceed with _Payment Envelope_ decoding and signature verification described
    in the next section.
 
-#### `dc:` scheme
+#### `dogeconnect:` scheme
 
 1. Receive the QR Code URI from the host system.
-2. Use a URL/URI decoding library to break apart the URI into a _scheme_ (`dc:`),
+2. Use a URL/URI decoding library to break apart the URI into a _scheme_ (`dogeconnect:`),
    a _path_ component (the trimmed Payment Envelope URL) and a _query parameter_: `h`.
 3. Both the path and `h` must be present and non-empty. If either are missing or
    empty, the QR Code is invalid (this suggests a MITM attack or a malformed code.)
