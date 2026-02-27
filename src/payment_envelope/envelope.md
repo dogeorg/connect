@@ -40,7 +40,7 @@
 
 ```json
 {
-    "type": "item",                           // item, tax, fee, shipping, discount, donation
+    "type": "item",                           // item, tax, fee, shipping, discount, donation, signing
 	"id": "SK-101",                           // unique item ID or SKU
 	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG
 	"name": "Doge Plushie",                   // name to display
@@ -52,14 +52,28 @@
 }
 ```
 
+For items with `"type": "signing"`, the `count`, `unit`, `total`, and `tax` fields are
+not applicable and MUST be omitted. A `signing` item represents a payload being
+committed to the blockchain via an `OP_RETURN` output — not a purchase. The wallet
+MUST display `signing` items prominently so the user understands they are signing and
+broadcasting data, not just making a payment.
+
 ### Connect Output
 
 ```json
 {
 	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
 	"amount": "1.0",                                 // Amount, 8-DP string
+	"data": "48656c6c6f",                            // Hex-encoded OP_RETURN payload (optional)
 }
 ```
+
+The `data` field is optional. When present, the wallet MUST include an additional
+`OP_RETURN` output in the transaction carrying the decoded bytes. The `address` and
+`amount` fields remain required and produce a normal payment output alongside it.
+
+The `data` value MUST be a valid hex string (even number of hex characters.) The
+decoded payload MUST NOT exceed 80 bytes, which is the maximum OP_RETURN data size.
 
 ### 8-DP string
 

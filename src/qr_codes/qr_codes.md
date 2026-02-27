@@ -52,7 +52,27 @@ Wallets MUST use the `h` hash to verify that the _Payment Envelope_ came from th
 vendor's nominated _Payment Relay_, as this protects against man-in-the-middle (MITM)
 attacks and redirection of funds.
 
+### The `dc:` URI Scheme
+
+DogeConnect-aware wallets may also support the dedicated `dc:` URI scheme, which
+is purpose-built for DogeConnect and requires no backwards compatibility with
+legacy wallets.
+
+```
+dc:example.com/dc/xyz123?h=p212MS4KXZBX5uDNXWmB
+```
+
+The path component of the `dc:` URI is the URL of the _Payment Envelope_, with the
+`https://` prefix trimmed off (as with the `dc` parameter in the `dogecoin:` scheme.)
+The `h` query parameter is the same _Payment Relay_ public key hash used in the
+`dogecoin:` scheme.
+
+Because this scheme is exclusively for DogeConnect, there are no fallback address
+or amount fields — wallets that scan a `dc:` QR Code MUST support DogeConnect.
+
 ### Wallet Implementation
+
+#### `dogecoin:` scheme
 
 1. Receive the QR Code URI from the host system
 2. Use a URL/URI decoding library to break apart the URI into a _scheme_ (`dogecoin:`),
@@ -69,7 +89,7 @@ attacks and redirection of funds.
 5. Concatenate `https://` onto the start of the `dc` parameter. It is always a
    _https_ URL, but the `https://` is trimmed off to keep the QR Codes from
    growing too large.
-6. Fetch the DogeConnect _Payment Envelope_ JSON payload from the URL created in step 4.
+6. Fetch the DogeConnect _Payment Envelope_ JSON payload from the URL created in step 5.
    If this request fails, make a few attempts before giving up, as sometimes there
    are spurious network errors (especially on mobile devices.)
 7. Decode the JSON _Payment Envelope_. If decoding fails, consider making another
@@ -83,6 +103,21 @@ attacks and redirection of funds.
    likely been tampered with (this strongly suggests a MITM attack.)
 10. Proceed with _Payment Envelope_ decoding and signature verification described
    in the next section.
+
+#### `dc:` scheme
+
+1. Receive the QR Code URI from the host system.
+2. Use a URL/URI decoding library to break apart the URI into a _scheme_ (`dc:`),
+   a _path_ component (the trimmed Payment Envelope URL) and a _query parameter_: `h`.
+3. Both the path and `h` must be present and non-empty. If either are missing or
+   empty, the QR Code is invalid (this suggests a MITM attack or a malformed code.)
+4. Decode the Base64-encoded `h` parameter, using a library or Base64 decode routine.
+   If this fails to decode, or doesn't yield 15 bytes of data, the request is invalid.
+5. Concatenate `https://` onto the start of the path component to form the full
+   _Payment Envelope_ URL. The path is always an `https://` URL with the prefix
+   trimmed, exactly as with the `dc` parameter in the `dogecoin:` scheme.
+6. Fetch, decode, and verify the _Payment Envelope_ exactly as described in steps
+   6–10 of the `dogecoin:` scheme above.
 
 The goals of the above process are to recognise a DogeConnect QR Code, fetch the
 _Payment Envelope_ from the vendor's nominated _Payment Relay_, and verify that
