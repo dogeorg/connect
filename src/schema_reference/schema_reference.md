@@ -239,7 +239,7 @@ The relay's response from both the `pay` and `status` endpoints.
 | `status` | string | yes | PaymentStatus enum |
 | `reason` | string | conditional | Reason for decline; present when `declined` |
 | `txid` | string | conditional | Hex-encoded tx ID; present when `accepted` or `confirmed` |
-| `confirmed_at` | string | conditional | RFC 3339 timestamp; present when `confirmed` |
+| `confirmed_at` | string | conditional | RFC 3339 timestamp of when the tx reached the required block confirmations; present when `confirmed` |
 | `required` | integer | conditional | Block confirmations required; present when `accepted` or `confirmed` |
 | `confirmed` | integer | conditional | Current block confirmations; present when `accepted` or `confirmed` |
 | `due_sec` | integer | conditional | Estimated seconds until confirmed; present when `accepted` or `confirmed` |

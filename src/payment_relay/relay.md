@@ -55,8 +55,9 @@ Both the `pay` and `status` endpoints return a _Payment Status_ response.
 
 The `status` field is a _PaymentStatus_ enum value. The `txid` field
 contains the hex-encoded transaction ID and is present whenever the
-status is `accepted` or `confirmed`. The `confirmed_at` field is an
-RFC 3339 timestamp and is only present when the status is `confirmed`.
+status is `accepted` or `confirmed`. The `confirmed_at` field is an RFC 3339 timestamp indicating when the
+submitted transaction reached the required number of block confirmations;
+it is only present when the status is `confirmed`.
 
 The status will be `accepted` if the _Relay_ requires one or more block
 confirmations on the blockchain, reflected in the `required` field.
