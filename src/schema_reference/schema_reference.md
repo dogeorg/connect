@@ -5,6 +5,12 @@ Quick reference for all DogeConnect JSON schemas.
 All `8-DP string` fields are decimal strings with up to 8 decimal places representing Dogecoin amounts.
 See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 
+### Optional String Fields
+
+- Payment Relays **SHOULD** include optional string fields as empty strings `""` when no value is available, rather than omitting them.
+- Wallets **MUST** treat a missing field and an empty string `""` identically (i.e. as not provided).
+- Wallets **SHOULD** provide sensible placeholders for missing display fields (e.g. icons).
+
 
 ## Enums
 
@@ -113,7 +119,7 @@ The decoded payload inside a Connect Envelope.
 | `relay_token` | string | no | Opaque relay-generated token; wallet MUST echo in Payment Submission if present |
 | `fee_per_kb` | string | yes | Minimum fee per 1000 bytes that the Payment Relay is willing to accept. Wallet MUST construct a transaction meeting at least this fee rate, 8-DP string |
 | `max_size` | integer | yes | Maximum size of transaction in bytes that the Payment Relay is willing to accept |
-| `vendor_icon` | string | no | Vendor icon URL (JPG or PNG) |
+| `vendor_icon` | string | no | Vendor icon URL (JPG or PNG); wallet SHOULD use a placeholder when not provided |
 | `vendor_name` | string | yes | Vendor display name |
 | `vendor_address` | string | no | Vendor business address |
 | `vendor_url` | string | no | Vendor website URL |
@@ -155,7 +161,7 @@ A line item within a Connect Payment.
 |---|---|---|---|
 | `type` | string | yes | ItemType enum |
 | `id` | string | yes | Unique item ID or SKU |
-| `icon` | string | no | Icon URL (JPG or PNG) |
+| `icon` | string | no | Icon URL (JPG or PNG); wallet SHOULD use a placeholder when not provided |
 | `name` | string | yes | Display name |
 | `desc` | string | no | Item description |
 | `count` | integer | yes | Number of units (>= 1) |
