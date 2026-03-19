@@ -12,7 +12,7 @@
 
 ```json
 {
-    "type": "item",                           // item, tax, fee, shipping, discount, donation, signing
+  "type": "item",                           // item, tax, fee, shipping, discount, donation, signing
 	"id": "SK-101",                           // unique item ID or SKU
 	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG
 	"name": "Doge Plushie",                   // name to display
