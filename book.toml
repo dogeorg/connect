@@ -8,10 +8,11 @@ src = "src"
 [output.html]
 mathjax-support = true
 git-repository-url = "https://github.com/dogeorg/connect/"
-git-repository-icon = "fa-github"
+git-repository-icon = "fab-github"
 edit-url-template = "https://github.com/dogeorg/connect/edit/main/{path}"
 cname = "connect.dogecoin.org"
 additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-css = ["custom.css"]
 
 [output.html.playground]
 editable = true

@@ -2,39 +2,11 @@
 
 ### Connect Envelope
 
-```json
-{
-	"version": "1.0",             // MUST be 1.0
-	"payload": "YTc2ZDc2MzEyZ..", // Base64-encoded JSON payload (e.g. Connect Payment)
-	"pubkey": "c8a6927d0a004..",  // Relay Public Key, BIP-340 Schnorr X-only (32 bytes)
-	"sig": "202d831c6437c..",     // Payload Signature, BIP-340 Schnorr (64 bytes)
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_envelope}}
 
 ### Connect Payment
 
-```json
-{
-	"type": "payment",                       // MUST be "payment"
-	"id": "PID-123",                         // Relay-unique Payment ID
-	"issued": "2006-01-02T15:04:05-07:00",   // RFC 3339 Timestamp
-	"timeout": 60,                           // Timeout in seconds, do not pay after this time
-	"relay": "https://example.com/..",       // Payment Relay to submit payment tx
-    "fee_per_kb": "0.01001386",              // Minimum fee per 1000 bytes in payment tx, 8-DP string
-    "max_size": 10000,                       // Maximum size in bytes of payment tx
-	"vendor_icon": "https://example.com/..", // Vendor icon URL, JPG or PNG
-	"vendor_name": "Vendor Co",              // Vendor display name
-	"vendor_address": "123 Example St",      // Vendor business address (optional)
-	"total": "41.9395",                      // Total including fees and taxes, 8-DP string
-	"fees": "1.0",                           // Fees subtotal, 8-DP string
-	"taxes": "1.9495",                       // Taxes subtotal, 8-DP string
-	"fiat_total": "5.00",                    // Total in fiat currency, decimal string (optional)
-	"fiat_tax": "0.23",                      // Taxes in fiat currency, decimal string (optional)
-    "fiat_currency": "USD",                  // ISO 4217 currency code (required with fiat_total/fiat_tax)
-	"items": [],                             // List of line items to display (Connect Items)
-	"outputs": [],                           // List of outputs to pay (Connect Outputs)
-}
-```
+{{#include ../schema_reference/schema_reference.md:connect_payment}}
 
 ### Connect Item
 
@@ -51,6 +23,7 @@
 	"tax": "1.9495",                          // tax on this item, 8-DP string (optional)
 }
 ```
+{{#include ../schema_reference/schema_reference.md:connect_item}}
 
 For items with `"type": "signing"`, the `count`, `unit`, `total`, and `tax` fields are
 not applicable and MUST be omitted. A `signing` item represents a payload being
@@ -69,6 +42,7 @@ broadcasting data, not just making a payment.
 	"amount": "1.0",                                 // Amount, 8-DP string
 }
 ```
+{{#include ../schema_reference/schema_reference.md:connect_output}}
 
 **Data-only output** (`type` is `"data"`):
 
@@ -121,6 +95,7 @@ Use the following steps to decode and verify the payload.
 8. Check the `timeout` field: do not submit a payment transaction after the time `issued` + `timeout`.
 9. Display the payment information and ask the user to confirm payment.
 10. Create and sign a payment transaction and submit it to the [Payment Relay](../payment_relay/relay.md).
+    If the Connect Payment contains a `relay_token`, include it in the Payment Submission.
 
 The goals of the above process are to verify that the _Payment Envelope_ is cryptographically
 signed by the _Payment Relay's_ private key, i.e. the envelope was created by the _Payment Relay_.

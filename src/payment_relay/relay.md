@@ -4,10 +4,10 @@ The _Payment Relay_ base URL is found in the `relay` field of _Connect Payment_.
 
 The following Web API must be implemented by a _Payment Relay_:
 
-| URL                | Method | Post Data               | Response              | Function                       |
-|--------------------|--------|-------------------------|-----------------------|--------------------------------|
-| _relay_/**pay**    | POST   | _Payment&nbsp;Response_ | _Payment&nbsp;Reply_  | Submit&nbsp;payment&nbsp;tx    |
-| _relay_/**status** | POST   | _Status&nbsp;Query_     | _Status&nbsp;Reply_   | Query&nbsp;payment&nbsp;status |
+| URL                | Method | Post Data                   | Response                | Function                       |
+|--------------------|--------|-----------------------------|-------------------------|--------------------------------|
+| _relay_/**pay**    | POST   | _Payment&nbsp;Submission_   | _Payment&nbsp;Status_   | Submit&nbsp;payment&nbsp;tx    |
+| _relay_/**status** | POST   | _Status&nbsp;Query_         | _Payment&nbsp;Status_   | Query&nbsp;payment&nbsp;status |
 
 Requests and responses are JSON payloads; JSON _must_ be UTF-8 encoded.
 
@@ -22,90 +22,97 @@ the supplied `tx`. This is because wallets will retry their `pay` request
 if they did not receive or process the first reply.
 
 
-### Payment Response
+### Relay Token
 
-This is the wallet's _response_ to the original _Payment Request_.
+A _Relay_ may include an opaque `relay_token` in the _Connect Payment_. If present,
+the wallet **must** echo it back verbatim in the _Payment Submission_. The token is
+opaque to the wallet — it should not attempt to parse or interpret its contents.
 
-```json
-{
-    "id": "PID-123",                // Relay-unique Payment ID from Connect Payment
-	"tx": "489c47f8a3ba3293737..",  // Hex-encoded signed dogecoin transaction
-    "refund": "DKY8dUTQthSX..",     // Dogecoin address for refunds (RECOMMENDED)
-}
-```
+The relay token enables **stateless validation**: the relay can embed whatever
+parameters it needs inside the token, avoiding additional lookups at submission time.
+
+The token format is entirely up to the relay implementation.
 
 
-### Payment Reply
+### Payment Submission
 
-This is the _Payment Relay's_ reply from the `pay` URL.
+The wallet's submission to the relay's `pay` endpoint in response to a _Connect Payment_.
 
-```json
-{
-    "id": "PID-123",       // Relay-unique Payment ID from Connect Payment
-	"status": "accepted",  // One of: accepted | confirmed | declined
-    "reason": "",          // Reason for decline (message, optional)
-    "required": 5,         // Number of block confirmations required (risk analysis)
-    "confirmed": 0,        // Current number of block confirmations on-chain
-    "due_sec": 300,        // Estimated time in seconds until confirmed
-}
-```
+{{#include ../schema_reference/schema_reference.md:payment_submission}}
+
+
+### Payment Status
+
+Both the `pay` and `status` endpoints return a _Payment Status_ response.
+
+**200 — Accepted:**
+
+{{#include ../schema_reference/schema_reference.md:payment_status_accepted}}
+
+**403 — Declined:**
+
+{{#include ../schema_reference/schema_reference.md:payment_status_declined}}
+
+The `status` field is a _PaymentStatus_ enum value. The `txid` field
+contains the hex-encoded transaction ID and is present whenever the
+status is `accepted` or `confirmed`. The `confirmed_at` field is an RFC 3339 timestamp indicating when the
+submitted transaction reached the required number of block confirmations;
+it is only present when the status is `confirmed`.
 
 The status will be `accepted` if the _Relay_ requires one or more block
 confirmations on the blockchain, reflected in the `required` field.
 The status may be `confirmed` if the _Relay_ deems the payment low-risk.
 
-If the transaction is malformed, or does not pay the requested amounts to
-the requested addresses, the POST will be rejected with a **400 Bad Request**
-http response. This represents a _programming error_ in the wallet.
-A _bad request_ should not be retried.
+The `required`, `confirmed` and `due_sec` fields are present whenever the
+status is `accepted` or `confirmed`. The `required` field indicates how many
+block confirmations the _Relay_ requires; `confirmed` is the current count
+on-chain; `due_sec` is the estimated seconds remaining until `confirmed`.
 
-Payments may also be rejected with a `declined` status, in the case that
-the _Vendor_ or their nominated _Relay_ believes the transaction is too
-risky. This represents a _customer-specific_ problem. A declined request
-should not be retried.
+When the payment status is `confirmed`, the `confirmed` field is always
+greater or equal to `required`, and the `due_sec` field is always zero.
 
-Wallets should also be prepared to handle 500 and 503 http errors,
-and other spurious errors, which indicate a temporary _Relay_ or
-network problem. Wallets _should_ retry the request a few times
-(with a small random delay) to increase reliability.
+Payments transition from `unpaid` to `accepted` after the signed transaction
+is submitted to the `pay` endpoint (provided payment was accepted.) After
+the required number of block confirmations have been seen on-chain, the
+payment status transitions to `confirmed`.
 
-The final three fields, `required`, `confirmed` and `due_sec` are in common
-with the _Status Reply_ below.
+Note: there are some edge-cases where the `confirmed` count can reduce,
+i.e. during a short-term blockchain fork.
+
+
+### Error Response
+
+{{#include ../schema_reference/schema_reference.md:error_response}}
+
+
+### HTTP Status Codes
+
+#### `pay` endpoint
+
+| HTTP | Body | Meaning |
+|---|---|---|
+| 200 | Payment Status | Accepted or confirmed |
+| 400 | Error Response | Programming error (malformed tx, wrong outputs, expired, invalid token) |
+| 403 | Payment Status | Declined (`status: "declined"`) |
+| 404 | Error Response | Unknown payment ID |
+| 500 / 503 | - | Transient server error; retry with backoff |
+
+#### `status` endpoint
+
+| HTTP | Body | Meaning |
+|---|---|---|
+| 200 | Payment Status | Status returned |
+| 404 | Error Response | Unknown payment ID |
+| 500 / 503 | - | Transient server error; retry with backoff |
+
+A **400** or **403** response indicates a permanent failure; wallets should
+not retry. A **500** or **503** response is transient — the wallet should
+assume the relay will recover and retry a few times with exponential backoff
+and a small random jitter.
 
 
 ### Status Query
 
 This allows the wallet to query the current status of a payment.
 
-```json
-{
-    "id": "PID-123"  // Relay-unique Payment ID from Connect Payment
-}
-```
-
-
-### Status Reply
-
-This is the _Payment Relay's_ reply from the `status` URL.
-
-```json
-{
-    "id": "PID-123",        // Relay-unique Payment ID from Connect Payment
-	"status": "accepted",   // unpaid | accepted | confirmed
-    "required": 5,          // Number of block confirmations required
-    "confirmed": 4,         // Current number of block confirmations on-chain
-    "due_sec": 30,          // Estimated time in seconds until confirmed
-}
-```
-
-Payments transition from `unpaid` to `accepted` after the signed transaction
-is submitted to the `pay` endpoint (provided payment was accepted.)
-
-After the required number of block confirmations have been seen on-chain,
-the payment status transitions to `confirmed`.
-
-When the payment status is `confirmed`, the `confirmed` field is always greater
-or equal to `required`, and the `due_sec` field is alway zero.
-
-Note: there are some edge-cases where the `confirmed` count can reduce,
-i.e. during a short-term blockchain fork.
+{{#include ../schema_reference/schema_reference.md:status_query}}
