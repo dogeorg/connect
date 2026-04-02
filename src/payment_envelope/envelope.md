@@ -10,19 +10,6 @@
 
 ### Connect Item
 
-```json
-{
-  "type": "item",                           // item, tax, fee, shipping, discount, donation, signing
-	"id": "SK-101",                           // unique item ID or SKU
-	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG
-	"name": "Doge Plushie",                   // name to display
-	"desc": "One doge plushie in a soft bag", // item description to display
-	"count": 1,                               // number of units >= 1
-	"unit": "38.99",                          // unit price, 8-DP string
-	"total": "38.99",                         // count x unit, 8-DP string
-	"tax": "1.9495",                          // tax on this item, 8-DP string (optional)
-}
-```
 {{#include ../schema_reference/schema_reference.md:connect_item}}
 
 For items with `"type": "signing"`, the `count`, `unit`, `total`, and `tax` fields are
@@ -33,34 +20,7 @@ broadcasting data, not just making a payment.
 
 ### Connect Output
 
-**P2PKH output** (`type` defaults to `"p2pkh"` if omitted):
-
-```json
-{
-	"type": "p2pkh",                                 // optional, default
-	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
-	"amount": "1.0",                                 // Amount, 8-DP string
-}
-```
 {{#include ../schema_reference/schema_reference.md:connect_output}}
-
-**Data-only output** (`type` is `"data"`):
-
-```json
-{
-	"type": "data",           // OP_RETURN output
-	"data": "48656c6c6f",    // Hex-encoded OP_RETURN payload
-}
-```
-
-The `type` field defaults to `"p2pkh"` when omitted, for backwards compatibility.
-
-For `"p2pkh"` outputs, `address` and `amount` are required.
-
-For `"data"` outputs, `data` is required and `address` and `amount` MUST be omitted.
-The wallet MUST create an `OP_RETURN` output carrying the decoded bytes.
-The `data` value MUST be a valid hex string (even number of hex characters) and the
-decoded payload MUST NOT exceed 80 bytes, which is the maximum OP_RETURN data size.
 
 ### 8-DP string
 
