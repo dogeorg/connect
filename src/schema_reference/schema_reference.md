@@ -30,6 +30,7 @@ See [Payment Envelope](../payment_envelope/envelope.md#8-dp-string) for details.
 | `shipping` | Shipping charge |
 | `discount` | Discount (amount MUST be negative) |
 | `donation` | Donation |
+| `signing` | Data signing payload (OP_RETURN); `count`, `unit`, `total`, `tax` MUST be omitted |
 
 ### PaymentStatus
 
@@ -144,7 +145,7 @@ A line item within a Connect Payment.
 <!-- ANCHOR: connect_item -->
 ```json
 {
-	"type": "item",                           // item, tax, fee, shipping, discount, donation
+	"type": "item",                           // item, tax, fee, shipping, discount, donation, signing
 	"id": "SK-101",                           // unique item ID or SKU
 	"icon": "https://example.com/itm/ic.png", // icon URL, JPG or PNG (optional)
 	"name": "Doge Plushie",                   // name to display
@@ -164,10 +165,10 @@ A line item within a Connect Payment.
 | `icon` | string | no | Icon URL (JPG or PNG); wallet SHOULD use a placeholder when not provided |
 | `name` | string | yes | Display name |
 | `desc` | string | no | Item description |
-| `count` | integer | yes | Number of units (>= 1) |
-| `unit` | string | yes | Unit price, 8-DP string |
-| `total` | string | yes | count x unit, 8-DP string |
-| `tax` | string | no | Tax on this item, 8-DP string |
+| `count` | integer | conditional | Number of units (>= 1); required for all types except `signing` |
+| `unit` | string | conditional | Unit price, 8-DP string; required for all types except `signing` |
+| `total` | string | conditional | count x unit, 8-DP string; required for all types except `signing` |
+| `tax` | string | no | Tax on this item, 8-DP string; MUST be omitted for `signing` |
 
 
 ## Connect Output
@@ -175,18 +176,41 @@ A line item within a Connect Payment.
 A transaction output the wallet must pay.
 
 <!-- ANCHOR: connect_output -->
+**P2PKH output** (`type` defaults to `"p2pkh"` if omitted):
+
 ```json
 {
+	"type": "p2pkh",                                 // optional, default "p2pkh"
 	"address": "DQ6dt7wCjLDxtdSwCYSAMFHwrD5Q1xybmL", // Dogecoin Address
 	"amount": "1.0"                                   // Amount, 8-DP string
 }
 ```
-<!-- ANCHOR_END: connect_output -->
+
+**Data-only output** (`type` is `"data"`):
+
+```json
+{
+	"type": "data",           // OP_RETURN output
+	"data": "48656c6c6f"     // Hex-encoded OP_RETURN payload
+}
+```
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `address` | string | yes | Dogecoin address |
-| `amount` | string | yes | Amount to pay, 8-DP string |
+| `type` | string | no | `"p2pkh"` (default) or `"data"` |
+| `address` | string | conditional | Dogecoin address; required for `p2pkh`, MUST be omitted for `data` |
+| `amount` | string | conditional | Amount to pay, 8-DP string; required for `p2pkh`, MUST be omitted for `data` |
+| `data` | string | conditional | Hex-encoded OP_RETURN payload (max 80 bytes decoded); required for `data`, MUST be omitted for `p2pkh` |
+
+The `type` field defaults to `"p2pkh"` when omitted, for backwards compatibility.
+
+For `"p2pkh"` outputs, `address` and `amount` are required.
+
+For `"data"` outputs, `data` is required and `address` and `amount` MUST be omitted.
+The wallet MUST create an `OP_RETURN` output carrying the decoded bytes.
+The `data` value MUST be a valid hex string (even number of hex characters) and the
+decoded payload MUST NOT exceed 80 bytes, which is the maximum OP_RETURN data size.
+<!-- ANCHOR_END: connect_output -->
 
 
 ## Payment Submission
